@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Random Number Timer</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      height: 100vh;
+    }
+
+    #output {
+      font-size: 200px;
+      padding-top: 100px;
+      color: black;
+      transition: opacity 1s ease-in-out;
+    }
+
+    #output.final-result {
+      color: green;
+    }
+
+    #startBtn,
+    #stopBtn,
+    #resetBtn,
+    #answerBtn {
+      font-size: 1.5em;
+      padding: 10px;
+      cursor: pointer;
+    }
+
+    .btns {
+      display: flex;
+      justify-content: space-around;
+      padding-top: 150px;
+    }
+
+    .btnstyl1 {
+      background: #4CAF50;
+      border: none;
+      color: white;
+      padding: 35px 30px !important;
+      border-radius: 50%;
+      box-shadow: 5px 2px 12px #c5c5c5;
+    }
+
+    .btnstyl2 {
+      background: #f44336;
+      border: none;
+      color: white;
+      padding: 35px 30px !important;
+      border-radius: 50%;
+      box-shadow: 5px 2px 12px #c5c5c5;
+    }
+
+    .btnstyl3 {
+      background: #2196F3;
+      border: none;
+      color: white;
+      border-radius: 50%;
+      padding: 35px 25px !important;
+      box-shadow: 5px 2px 12px #c5c5c5;
+    }
+
+    .btnstyl4 {
+      background: #FF9800;
+      border: none;
+      color: white;
+      padding: 35px 18px !important;
+      border-radius: 50%;
+      box-shadow: 5px 2px 12px #c5c5c5;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="output" class="screen">0</div>
+  <div class="btns">
+    <button id="startBtn" class="btnstyl1" onclick="startTimer()">Start</button>
+    <button id="stopBtn" class="btnstyl2" onclick="stopTimer()">Stop</button>
+	<button id="resetBtn" class="btnstyl3" onclick="resetProgram()">Reset</button>
+    <button id="answerBtn" class="btnstyl4" onclick="showAnswer()">Answer</button>
+  </div>
+
+  <script>
+    let timerId;
+    let result = 0;
+    let isTimerRunning = false;
+
+    function startTimer() {
+      if (!isTimerRunning) {
+        displayRandomNumber(); // Display the first number without a suffix symbol
+        timerId = setInterval(displayRandomNumber, 1000);
+        isTimerRunning = true;
+      }
+    }
+
+    function stopTimer() {
+      clearInterval(timerId);
+      isTimerRunning = false;
+    }
+
+    function resetProgram() {
+      clearInterval(timerId);
+      result = 0;
+      const output = document.getElementById('output');
+      output.style.opacity = 0;
+      output.classList.remove('final-result');
+      setTimeout(() => {
+        output.innerHTML = '0';
+      }, 500);
+      isTimerRunning = false;
+    }
+
+    function displayRandomNumber() {
+      if (isTimerRunning) {
+        const randomNumber = Math.floor(Math.random() * 100);
+        const randomSymbol = Math.random() < 0.5 ? '+' : '-';
+
+        const output = document.getElementById('output');
+        output.style.opacity = 0;
+
+        setTimeout(() => {
+          output.textContent = randomSymbol + randomNumber;
+          output.style.opacity = 1;
+        }, 500);
+
+        // Update the result based on the random number and symbol
+        result = calculateResult(result, randomSymbol, randomNumber);
+      }
+    }
+
+    function calculateResult(currentResult, symbol, number) {
+      if (symbol === '+') {
+        return currentResult + number;
+      } else {
+        return currentResult - number;
+      }
+    }
+
+    function showAnswer() {
+      const output = document.getElementById('output');
+      output.classList.add('final-result');
+      output.innerHTML = result;
+      setTimeout(() => {
+        output.style.opacity = 1;
+      }, 100);
+    }
+  </script>
+
+</body>
+
+</html>
