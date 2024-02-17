@@ -107,7 +107,7 @@
       border: none;
       color: #fff;
       border: 3px solid rgb(255 173 173);
-    border-style: groove;
+    border-style: ridge;
     box-shadow: 2px 3px 4px #d1d1d1;
     }
     .set:focus .d-none{
@@ -118,133 +118,128 @@
 
 <body>
   <div id="output" class="screen">0</div>
-  <div class="btns">
+<div class="btns">
     <button id="startBtn" class="btnstyl1" onclick="startTimer()">Start</button>
     <button id="stopBtn" class="btnstyl2" onclick="stopTimer()">Stop</button>
     <button id="resetBtn" class="btnstyl3" onclick="resetProgram()">Reset</button>
     <button id="answerBtn" class="btnstyl4" onclick="showAnswer()">Answer</button>
-
-
-  </div>
-  <div class="set-time">
+</div>
+<div class="set-time">
     <a href="#" id="stopwatchLink"><img src="image/stopwatch.png" alt=""></a>
     <div class="d-none" id="speedDiv">
         <label for="speedInput">Speed: </label>
-        <input type="number" id="speedInput" min="1" max="5" value="1">
+        <input type="number" id="speedInput" step="0.1" min="0.1" max="5" value="1">
         <button class="set" id="setButton">SET</button>
     </div>
 </div>
 
-  <script>
+<script>
     let timerId;
     let result = 0;
     let isTimerRunning = false;
-    let transitionSpeed = 3000; // Default speed in milliseconds (3 seconds)
+    let transitionSpeed = 1000; // Default speed in milliseconds (1 second)
     let negativeCount = 0;
     let generationCount = 0;
 
     function startTimer() {
-      if (!isTimerRunning) {
-        displayRandomNumber();
-        timerId = setInterval(displayRandomNumber, transitionSpeed);
-        isTimerRunning = true;
-      }
+        if (!isTimerRunning) {
+            displayRandomNumber();
+            timerId = setInterval(displayRandomNumber, transitionSpeed);
+            isTimerRunning = true;
+        }
     }
 
     function stopTimer() {
-      clearInterval(timerId);
-      isTimerRunning = false;
+        clearInterval(timerId);
+        isTimerRunning = false;
     }
 
     function resetProgram() {
-      clearInterval(timerId);
-      result = 0;
-      const output = document.getElementById('output');
-      output.style.opacity = 1;
-      output.classList.remove('final-result');
-      output.innerHTML = '0';
-      isTimerRunning = false;
-      negativeCount = 0;
-      generationCount = 0;
+        clearInterval(timerId);
+        result = 0;
+        const output = document.getElementById('output');
+        output.style.opacity = 1;
+        output.classList.remove('final-result');
+        output.innerHTML = '0';
+        isTimerRunning = false;
+        negativeCount = 0;
+        generationCount = 0;
     }
 
     function displayRandomNumber() {
-      if (isTimerRunning) {
-        const randomNumber = generateRandomNumber();
+        if (isTimerRunning) {
+            const randomNumber = generateRandomNumber();
 
-        const output = document.getElementById('output');
-        output.style.opacity = 0;
+            const output = document.getElementById('output');
+            output.style.opacity = 0;
 
-        setTimeout(() => {
-          output.textContent = randomNumber;
-          output.style.opacity = 1;
-        }, transitionSpeed);
+            setTimeout(() => {
+                output.textContent = randomNumber;
+                output.style.opacity = 1;
+            }, transitionSpeed);
 
-        result = calculateResult(result, '+', randomNumber);
+            result = calculateResult(result, '+', randomNumber);
 
-        generationCount++;
+            generationCount++;
 
-        if (generationCount === 15) {
-          // Reset the counts after 15 generations
-          negativeCount = 0;
-          generationCount = 0;
+            if (generationCount === 15) {
+                // Reset the counts after 15 generations
+                negativeCount = 0;
+                generationCount = 0;
+            }
         }
-      }
     }
 
     function generateRandomNumber() {
-      let randomNumber;
-      if (generationCount < 2) {
-        // Ensure the first two numbers are positive
-        randomNumber = Math.floor(Math.random() * 100);
-      } else {
-        // Allow negative numbers between -1 and -20 after the first two positive numbers
-        randomNumber = Math.floor(Math.random() * 20) + 1;
-        randomNumber *= Math.random() < 0.5 ? -1 : 1;
+        let randomNumber;
+        if (generationCount < 2) {
+            // Ensure the first two numbers are positive
+            randomNumber = Math.floor(Math.random() * 100);
+        } else {
+            // Allow negative numbers between -1 and -20 after the first two positive numbers
+            randomNumber = Math.floor(Math.random() * 20) + 1;
+            randomNumber *= Math.random() < 0.5 ? -1 : 1;
 
-        // Increment negative count if a negative number is generated
-        if (randomNumber < 0) {
-          negativeCount++;
+            // Increment negative count if a negative number is generated
+            if (randomNumber < 0) {
+                negativeCount++;
+            }
+
+            // Ensure only 2 occurrences of negative numbers in 15 generations
+            if (negativeCount > 2) {
+                randomNumber = Math.abs(randomNumber);
+            }
         }
 
-        // Ensure only 2 occurrences of negative numbers in 15 generations
-        if (negativeCount > 2) {
-          randomNumber = Math.abs(randomNumber);
-        }
-      }
-
-      return randomNumber;
+        return randomNumber;
     }
 
     function calculateResult(currentResult, symbol, number) {
-      return currentResult + number;
+        return currentResult + number;
     }
 
     function showAnswer() {
-      const output = document.getElementById('output');
-      output.classList.add('final-result');
-      output.innerHTML = result;
-      setTimeout(() => {
-        output.style.opacity = 1;
-      }, transitionSpeed);
+        const output = document.getElementById('output');
+        output.classList.add('final-result');
+        output.innerHTML = result;
+        setTimeout(() => {
+            output.style.opacity = 1;
+        }, transitionSpeed);
     }
 
     function adjustSpeed(value) {
-      transitionSpeed = value * 1000; // Convert value to milliseconds
-      if (isTimerRunning) {
-        clearInterval(timerId);
-        timerId = setInterval(displayRandomNumber, transitionSpeed);
-      }
+        transitionSpeed = value * 1000; // Convert value to milliseconds
+        if (isTimerRunning) {
+            clearInterval(timerId);
+            timerId = setInterval(displayRandomNumber, transitionSpeed);
+        }
     }
 
     // Event listener for input changes
     document.getElementById('speedInput').addEventListener('change', function () {
-      const speedValue = parseInt(this.value, 10);
-      adjustSpeed(speedValue);
+        const speedValue = parseFloat(this.value);
+        adjustSpeed(speedValue);
     });
-
-
-
 
     // stop-watch
     var speedDiv = document.getElementById('speedDiv');
@@ -258,7 +253,7 @@
     setButton.addEventListener('click', function() {
         speedDiv.classList.add('d-none');
     });
-  </script>
+</script>
 
 
 
