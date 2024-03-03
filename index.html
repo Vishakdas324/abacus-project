@@ -7,6 +7,7 @@
   <title>Abacus Random Number Generator</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
   <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
+ 
   <style>
     body {
       text-align: center;
@@ -117,6 +118,12 @@
 </head>
 
 <body>
+
+
+  <audio id="ticSound">
+    <source src="audio/tic3.mp3" type="audio/mpeg">
+   
+  </audio>
   <div id="output" class="screen">0</div>
 <div class="btns">
     <button id="startBtn" class="btnstyl1" onclick="startTimer()">Start</button>
@@ -132,138 +139,7 @@
         <button class="set" id="setButton">SET</button>
     </div>
 </div>
-
-<script>
-    let timerId;
-    let result = 0;
-    let isTimerRunning = false;
-    let transitionSpeed = 1000; // Default speed in milliseconds (1 second)
-    let negativeCount = 0;
-    let generationCount = 0;
-
-    function startTimer() {
-        if (!isTimerRunning) {
-            displayRandomNumber();
-            timerId = setInterval(displayRandomNumber, transitionSpeed);
-            isTimerRunning = true;
-        }
-    }
-
-    function stopTimer() {
-        clearInterval(timerId);
-        isTimerRunning = false;
-    }
-
-    function resetProgram() {
-        clearInterval(timerId);
-        result = 0;
-        const output = document.getElementById('output');
-        output.style.opacity = 1;
-        output.classList.remove('final-result');
-        output.innerHTML = '0';
-        isTimerRunning = false;
-        negativeCount = 0;
-        generationCount = 0;
-    }
-
-    function displayRandomNumber() {
-        if (isTimerRunning) {
-            const randomNumber = generateRandomNumber();
-
-            const output = document.getElementById('output');
-            output.style.opacity = 0;
-
-            setTimeout(() => {
-                output.textContent = randomNumber;
-                output.style.opacity = 1;
-            }, transitionSpeed);
-
-            result = calculateResult(result, '+', randomNumber);
-
-            generationCount++;
-
-            if (generationCount === 15) {
-                // Reset the counts after 15 generations
-                negativeCount = 0;
-                generationCount = 0;
-            }
-        }
-    }
-
-    function generateRandomNumber() {
-        let randomNumber;
-        if (generationCount < 2) {
-            // Ensure the first two numbers are positive
-            randomNumber = Math.floor(Math.random() * 100);
-        } else {
-            // Allow negative numbers between -1 and -20 after the first two positive numbers
-            randomNumber = Math.floor(Math.random() * 20) + 1;
-            randomNumber *= Math.random() < 0.5 ? -1 : 1;
-
-            // Increment negative count if a negative number is generated
-            if (randomNumber < 0) {
-                negativeCount++;
-            }
-
-            // Ensure only 2 occurrences of negative numbers in 15 generations
-            if (negativeCount > 2) {
-                randomNumber = Math.abs(randomNumber);
-            }
-        }
-
-        return randomNumber;
-    }
-
-    function calculateResult(currentResult, symbol, number) {
-        return currentResult + number;
-    }
-
-    function showAnswer() {
-        const output = document.getElementById('output');
-        output.classList.add('final-result');
-        output.innerHTML = result;
-        setTimeout(() => {
-            output.style.opacity = 1;
-        }, transitionSpeed);
-    }
-
-    function adjustSpeed(value) {
-        transitionSpeed = value * 1000; // Convert value to milliseconds
-        if (isTimerRunning) {
-            clearInterval(timerId);
-            timerId = setInterval(displayRandomNumber, transitionSpeed);
-        }
-    }
-
-    // Event listener for input changes
-    document.getElementById('speedInput').addEventListener('change', function () {
-        const speedValue = parseFloat(this.value);
-        adjustSpeed(speedValue);
-    });
-
-    // stop-watch
-    var speedDiv = document.getElementById('speedDiv');
-    var stopwatchLink = document.getElementById('stopwatchLink');
-    var setButton = document.getElementById('setButton');
-
-    stopwatchLink.addEventListener('click', function() {
-        speedDiv.classList.remove('d-none');
-    });
-
-    setButton.addEventListener('click', function() {
-        speedDiv.classList.add('d-none');
-    });
-</script>
-
-
-
-
-
-
-
-
-
-
 </body>
+<script src="script.js"></script>
 
 </html>
